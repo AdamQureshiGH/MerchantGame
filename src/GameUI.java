@@ -6,7 +6,12 @@ public class GameUI {
     public GameUI() {
         scanner = new Scanner(System.in);
     }
-
+    public void clear(){
+        for(int i = 0; i < 30; i++)
+        {
+            System.out.println();
+        }
+    }
     // pre: title is not null
     // post:  prints a nice header
     public void printHeader(String title) {
