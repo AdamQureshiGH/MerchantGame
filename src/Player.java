@@ -1,7 +1,16 @@
 public class Player {
+    private Caravan caravan;
     private int silver = 100;
     private int health = 100;
     private int foodSupplies = 100;
+
+    public Player() {
+        caravan = new Caravan(1000);
+    }
+
+    public Caravan getCaravan() {
+        return caravan;
+    }
 
     public int getFoodSupplies() {
         return foodSupplies;

@@ -1,9 +1,12 @@
+import java.util.ArrayList;
+
 public class MerchantGame
 {
 
     //main menu with what the game is, how to play, select difficulty, and play,
     //difficulty modifier could affect distance and food consumption
     //events with moral decisions or bad things happening or good things happenign, or meeting wandering traders
+    //alchemist offers you potions, spend a day searching for chicken 50% for big reward
     static City currentCity;
     static boolean isRunning = true;
     static int currentCityIndex = 0;
@@ -51,7 +54,21 @@ public class MerchantGame
                 System.out.println("\n[ Entering the Market... ]");
             }
             else if (choice == 2) {
-                System.out.println("\n[ Opening Wagon... ]");
+                ui.clear();
+                ui.printHeader("Wagon Inventory");
+                player.getCaravan().sortInventory();
+                ArrayList<Item> items = player.getCaravan().getInventory();
+
+                if(items.isEmpty()){
+                    ui.printMessage("Your wagon is empty and rattling. A sorry sight...");
+                } else{
+                    for(Item i: items)
+                    {
+                        System.out.println(" - " + i);
+                    }
+                }
+
+                ui.printProgressBar("Weight Capacity", player.getCaravan().getCurrentWeight(), player.getCaravan().getMaxWeight());
             }
             else if (choice == 3) {
                 handleTravel(player, ui);
