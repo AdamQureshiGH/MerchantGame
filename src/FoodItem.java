@@ -1,7 +1,7 @@
 public class FoodItem extends Item {
     private int nutritionValue;
 
-    public FoodItem(String n, int p, double w, int nutrition) {
+    public FoodItem(String n, int p, int w, int nutrition) {
         super(n, p, w);
         this.nutritionValue = nutrition;
     }

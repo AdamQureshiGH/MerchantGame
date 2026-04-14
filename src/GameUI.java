@@ -25,7 +25,9 @@ public class GameUI {
     public void printProgressBar(String label, int current, int max) {
         System.out.print(String.format("%-12s [", label));
         int dots = (int) ((double) current / max * 20);
+
         for (int i = 0; i < 20; i++) {
+
             if (i < dots) System.out.print("=");
             else System.out.print(".");
         }
