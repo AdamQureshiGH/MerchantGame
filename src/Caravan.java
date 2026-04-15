@@ -14,7 +14,7 @@ public class Caravan {
         addItem(new Item("aingus", 10, 10));
         addItem(new Item("cingus", 10, 10));
         addItem(new Item("gingus", 10, 10));
-        addItem(new Item("fingus", 10, 10));
+        addItem(new Item("bingus", 10, 10));
         addItem(new Item("eingus", 10, 10));
 
     }
@@ -50,7 +50,7 @@ public class Caravan {
             int index = i;
 
             for(int j = i; j < inventory.size(); j++){
-                if(inventory.get(i).getName().compareTo(inventory.get(j).getName()) > 0) {
+                if(smallest.getName().compareTo(inventory.get(j).getName()) > 0) {
                     smallest = inventory.get(j);
                     index = j;
                 }

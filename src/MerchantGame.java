@@ -61,10 +61,25 @@ public class MerchantGame
 
                 if(items.isEmpty()){
                     ui.printMessage("Your wagon is empty and rattling. A sorry sight...");
-                } else{
-                    for(Item i: player.getCaravan().getInventory())
+                }
+                else{
+                    for(int i = 0; i < items.size(); i++)
                     {
-                        System.out.println(" - " + i);
+                        Item currentItem = items.get(i);
+                        int count = 1;
+
+                        while(i+1 < items.size() && items.get(i).getName().equals(items.get(i+1).getName()))
+                        {
+                            count++;
+                            i++;
+                        }
+                        int totalWeight = currentItem.getWeight() * count;
+                        if(count > 1){
+                            System.out.println(String.format(" > %d x %-15s (%d lbs total)", count, currentItem.getName(), totalWeight));
+                        }
+                        else{
+                            System.out.println(String.format(" > 1 x %-15s (%d lbs)", currentItem.getName(), totalWeight));
+                        }
                     }
                 }
 
