@@ -3,14 +3,17 @@ public class City {
     private String nextCityName;
     private int distanceToNext;
     private String description;
-
-    public City(String name, String nextCity, int dist, String desc) {
+    private Market cityMarket;
+    public City(String name, String nextCity, int dist, String desc, Market market) {
         this.name = name;
         this.nextCityName = nextCity;
         this.distanceToNext = dist;
         this.description = desc;
+        this.cityMarket = market;
     }
-
+    public Market getMarket(){
+        return cityMarket;
+    }
     public String getName() {
         return name;
     }
