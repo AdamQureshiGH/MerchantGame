@@ -20,6 +20,6 @@ public class Item {
 
 
     public String toString() {
-        return String.format("%-15s | Price: %d | Weight (lbs): %.1f", name, price, weight);
+        return String.format("%-15s | Weight: %d lbs", name, weight);
     }
 }

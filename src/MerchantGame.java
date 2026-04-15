@@ -62,7 +62,7 @@ public class MerchantGame
                 if(items.isEmpty()){
                     ui.printMessage("Your wagon is empty and rattling. A sorry sight...");
                 } else{
-                    for(Item i: items)
+                    for(Item i: player.getCaravan().getInventory())
                     {
                         System.out.println(" - " + i);
                     }
