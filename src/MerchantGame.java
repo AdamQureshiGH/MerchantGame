@@ -10,14 +10,15 @@ public class MerchantGame
     static City currentCity;
     static boolean isRunning = true;
     static int currentCityIndex = 0;
+    private static final ArrayList<Item> masterPool = initializeMasterPool();
+
     static City[] worldMap = {
-            new City("Venice", "Ragusa", 4, "The floating city of canals."),
-            new City("Ragusa", "Budapest", 6, "A powerful stone fortress on the sea."),
-            new City("Budapest", "Adrianople", 5, "The jewel of the Danube river."),
-            new City("Adrianople", "Constantinople", 3, "The capital of the Ottoman Empire."),
-            new City("Constantinople", "FINISHED", 0, "The crossroads between Europe and Asia.")
+            new City("Venice", "Ragusa", 4, "The floating city of canals.", generateRandomMarket()),
+            new City("Ragusa", "Budapest", 6, "A powerful stone fortress on the sea.", generateRandomMarket()),
+            new City("Budapest", "Adrianople", 5, "The jewel of the Danube river.", generateRandomMarket()),
+            new City("Adrianople", "Constantinople", 3, "The capital of the Ottoman Empire.",generateRandomMarket()),
+            new City("Constantinople", "FINISHED", 0, "The crossroads between Europe and Asia.", generateRandomMarket())
     };
-    private static ArrayList<Item> masterPool = initializeMasterPool();
 
     public static void main(String[] args) {
         GameUI ui = new GameUI();
@@ -78,18 +79,28 @@ public class MerchantGame
                 shopping = false;
             }
             else{
-                Item selected = stock.get(choice -1);
+                Item selected = stock.get(choice - 1);
 
-                if(player.getSilver() < selected.getPrice()){
-                    System.out.println("\n[!]You dont have enough Silver!");
-                }
-                else if(player.getCaravan().getMaxWeight() < player.getCaravan().getCurrentWeight() + selected.getWeight()){
-                    System.out.println("\n[!] Your wagon can't hold that much weight!");
-                }
-                else{
-                    player.setSilver(player.getSilver()-selected.getPrice());
-                    player.getCaravan().addItem(selected);
-                    System.out.println("\nPurchased " + selected.getName() + "!");
+                System.out.print("How many " + selected.getName() + " would you like to buy? ");
+                int quantity = ui.readInt();
+
+                if (quantity <= 0) {
+                    System.out.println("Invalid amount.");
+                } else {
+                    int totalCost = selected.getPrice() * quantity;
+                    int totalWeight = selected.getWeight() * quantity;
+
+                    if (player.getSilver() < totalCost) {
+                        System.out.println("\n[!] Not enough Silver for that many");
+                    } else if (player.getCaravan().getCurrentWeight() + totalWeight > player.getCaravan().getMaxWeight()) {
+                        System.out.println("\n[!] Your wagon cant hold that much weight!");
+                    } else {
+                        for (int i = 0; i < quantity; i++) {
+                            player.getCaravan().addItem(new Item(selected.getName(), selected.getPrice(), selected.getWeight()));
+                        }
+                        player.setSilver(player.getSilver() - totalCost);
+                        System.out.println("\n[+] Loaded " + quantity + "x " + selected.getName() + " into the wagon.");
+                    }
                 }
                 ui.waitForEnter();
             }
@@ -236,7 +247,25 @@ public class MerchantGame
             if (i instanceof FoodItem) foodOptions.add(i);
             else normalOptions.add(i);
         }
-        //TESTING LOG
+        newMarket.addItemToStock(foodOptions.get((int)(Math.random() * foodOptions.size())));
+        int itemsToTarget = (int)(Math.random() * 5) + 5;
+
+        while(newMarket.getShelf().size() < itemsToTarget){
+            Item randomItem = normalOptions.get((int)(Math.random() * normalOptions.size()));
+
+            boolean duplicate = false;
+            for(Item shelfItem : newMarket.getShelf()){
+                if(shelfItem.getName().equals(randomItem.getName())){
+                    duplicate=true;
+                    break;
+                }
+            }
+            if(duplicate==false){
+                newMarket.addItemToStock(randomItem);
+            }
+
+        }
+        return newMarket;
     }
     private static ArrayList<Item> initializeMasterPool() {
     ArrayList<Item> pool = new ArrayList<>();

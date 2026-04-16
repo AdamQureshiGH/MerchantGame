@@ -66,4 +66,12 @@ public class GameUI {
         scanner.nextLine();
         scanner.nextLine();
     }
+
+    public int readInt() {
+        while (!scanner.hasNextInt()) {
+            System.out.print("Enter a number: ");
+            scanner.next();
+        }
+        return scanner.nextInt();
+    }
 }

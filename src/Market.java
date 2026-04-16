@@ -7,7 +7,7 @@ public class Market {
     }
 
     public Market() {
-
+        shelf = new ArrayList<Item>();
     }
 
     public void addItemToStock(Item item){
