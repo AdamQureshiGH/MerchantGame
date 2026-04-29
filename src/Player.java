@@ -2,7 +2,7 @@ public class Player {
     private Caravan caravan;
     private int silver = 100;
     private int health = 100;
-    private int foodSupplies = 100;
+    private int hunger = 20;
 
     public Player() {
         caravan = new Caravan(1000);
@@ -12,12 +12,18 @@ public class Player {
         return caravan;
     }
 
-    public int getFoodSupplies() {
-        return foodSupplies;
+    public int getHunger() {
+        return hunger;
     }
 
-    public void setFoodSupplies(int foodSupplies) {
-        this.foodSupplies = foodSupplies;
+    public void setHunger(int hunger) {
+        this.hunger = hunger;
+        if (this.hunger > 100){
+            this.hunger = 100;
+        }
+        if (this.hunger < 0) {
+            this.hunger = 0;
+        }
     }
 
     public int getHealth() {

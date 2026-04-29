@@ -23,23 +23,74 @@ public class MerchantGame
     public static void main(String[] args) {
         GameUI ui = new GameUI();
         Player player = new Player();
-        /*
-        System.out.println("The year is 1422. You stand in the bustling docks of Venice.");
-        System.out.println("Your caravan is ready to be loaded, and the road to the East awaits.");
-        */
 
         ui.printHeader("Merchant Game");
+        System.out.println("The year is 1422. You stand in the bustling docks of Venice.");
+        System.out.println("Your caravan is ready to be loaded, and the road to the East awaits.");
+
         ui.waitForEnter();
 
         mainLoop(player, ui);
 
         System.out.println("\n*** Thank you for playing! ***");
     }
+    public static void mainLoop(Player player, GameUI ui){
+        while(isRunning)
+        {
+            ui.clear();
+
+            currentCity = worldMap[currentCityIndex];
+            ui.printHeader(currentCity.getName());
+            System.out.println(currentCity.getDescription());
+
+            System.out.println("\n--- CURRENT STATUS ---");
+            ui.printProgressBar("Health", player.getHealth(), 100);
+            ui.printProgressBar("Hunger", player.getHunger(), 100);
+            ui.printProgressBar("Wagon Space", player.getCaravan().getCurrentWeight(), player.getCaravan().getMaxWeight());
+            ui.printCurrency("Wallet", player.getSilver());
+
+            String[] menuOptions = {
+                    "Visit the " + currentCity.getName() + " Merchant Guild Stand",
+                    "Check Wagon Inventory",
+                    "Depart for " + currentCity.getNextCityName() + " (" + currentCity.getDistance() + " days)",
+                    "Retire from Trading",
+            };
+            int choice = ui.displayMenu(menuOptions);
+
+            if (choice == 1) {
+                handleMarket(player, ui);
+            }
+            else if (choice == 2) {
+                checkInventory(player, ui);
+            }
+            else if (choice == 3) {
+                handleTravel(player, ui);
+            }
+            else if (choice == 4) {
+                System.out.println("Final Silver: " + player.getSilver());
+                System.out.println("You quit your life as a travelling merchant and settled down in " + currentCity.getName() +
+                        ".\n You are happy working at your small vendor's table, but you wonder if you could have been something more.");
+                // ADD GRADING SYSTEM LATER BASED ON FINAL WEALTH
+                isRunning = false;
+            }
+            else if(choice == 415)
+            {
+                System.out.println("Cheater Cheater Pumpkin Eater");
+                player.setSilver(1000);
+                player.setHealth(100);
+                player.setHunger(100);
+            }
+
+            if (isRunning) {
+                ui.waitForEnter();
+            }
+        }
+    }
     public static void printDeathMessage() {
         String[] messages = {
                 "Scorpions crawl over your decomposing corpse. Welcome hOMe.",
                 "You hit the dirt, staring at the bluish gray sky. Was it worth leaving your family in Venice to chase the wealth that moth and rust destroy and thieves break in and steal?",
-                "Your knees strike the ground, and you crawl over to a tree. As your vision fades, you lean the tree thinking about your family, whom you promised you would return to with new hope.",
+                "Your knees strike the ground, and you crawl over to a tree. As your vision fades, you lean the tree thinking about your family, who you promised you would return to with new hope.",
                 "Get pwned.",
                 "Your wagon stands abandoned in the mud and your horse walks to a local bar",
                 "You fall over next to a running stream. You can't help but smile thinking about the journey and the struggle of building yourself up, and you die with no regrets.",
@@ -96,8 +147,14 @@ public class MerchantGame
                         System.out.println("\n[!] Your wagon cant hold that much weight!");
                     } else {
                         for (int i = 0; i < quantity; i++) {
-                            player.getCaravan().addItem(new Item(selected.getName(), selected.getPrice(), selected.getWeight()));
-                        }
+                            Item newItem;
+                            if (selected instanceof FoodItem) {
+                                FoodItem food = (FoodItem)selected;
+                                newItem = new FoodItem(food.getName(), food.getPrice(), food.getWeight(), food.getNutrition());
+                            } else {
+                                newItem = new Item(selected.getName(), selected.getPrice(), selected.getWeight());
+                            }
+                            player.getCaravan().addItem(newItem);                        }
                         player.setSilver(player.getSilver() - totalCost);
                         System.out.println("\n[+] Loaded " + quantity + "x " + selected.getName() + " into the wagon.");
                     }
@@ -152,22 +209,32 @@ public class MerchantGame
             for(int d = 1; d<= travelDays; d++)
             {
                 System.out.println("Day " + d + " on the road.");
-                int foodNeeded = (int)(Math.random() * 11) + 10;
-                if (player.getFoodSupplies() >= foodNeeded) {
-                    System.out.println(foodNeeded + " units of food consumed.");
-                    player.setFoodSupplies(player.getFoodSupplies() - foodNeeded);
-                    player.setHealth(Math.min(100, player.getHealth() + 10));
-                    System.out.println("  > Remaining: " + player.getFoodSupplies());
-                } else {
-                    player.setFoodSupplies(0);
-                    player.setHealth(player.getHealth()-20);
-                    System.out.println("  > !! STARVATION !! You are out of food.");
-                    ui.printProgressBar("Health", player.getHealth(), 100);
+                //Random events here
 
+                int energyBurned = (int)(Math.random() * 11) + 10;
+
+                player.setHunger(player.getHunger() - energyBurned);
+                ui.printMessage((-(player.getHunger() - energyBurned)) + " energy burned");
+                ui.printProgressBar("Hunger", player.getHunger(), 100);
+
+                System.out.println("Do you want to stop and eat from your supplies? (1: Yes / 2: No)");
+                int eatChoice = ui.readInt();
+                if (eatChoice == 1) {
+                    checkAndEatWagonFood(player, ui);
                 }
 
-                //Random events here
-                //Rumors here "You hear rumors from a small town that (Town up ahead) is xyz"
+                if (player.getHunger() <=0) {
+                    player.setHunger(0);
+                    System.out.println("  > !! STARVATION !!");
+                    player.setHealth(player.getHealth()-20);
+                    ui.printProgressBar("Health", player.getHealth(), 100);
+                } else {
+                    player.setHealth(Math.min(100, player.getHealth() + 10));
+                    if(player.getHealth() < 100){
+                        ui.printProgressBar("Health", player.getHealth(), 100);
+                    }
+                }
+
 
                 if (player.getHealth() <= 0) {
                     ui.clear();
@@ -185,58 +252,58 @@ public class MerchantGame
 
         }
     }
+    public static void checkAndEatWagonFood(Player player, GameUI ui){
+        ArrayList<Item> inv = player.getCaravan().getInventory();
+        boolean stillEating = true;
 
-    public static void mainLoop(Player player, GameUI ui){
-        while(isRunning)
-        {
+        while(stillEating){
+            ArrayList<FoodItem> foodInWagon = new ArrayList<>();
+            for(Item i: inv){
+                if(i instanceof FoodItem){
+                    foodInWagon.add((FoodItem) i);
+                }
+            }
+
+            if(foodInWagon.isEmpty()){
+                ui.printMessage("You search your wagon but find no food. Your belly grumbles.");
+                stillEating = false;
+                break;
+            }
+
+            String[] options = new String[foodInWagon.size() + 1];
+            for (int i = 0; i < foodInWagon.size(); i++) {
+                FoodItem f = foodInWagon.get(i);
+                options[i] = String.format("Eat %-15s (+%d Hunger)", f.getName(), f.getNutrition());
+            }
+            options[foodInWagon.size()] = "Finish";
+
             ui.clear();
-
-            currentCity = worldMap[currentCityIndex];
-            ui.printHeader(currentCity.getName());
-            System.out.println(currentCity.getDescription());
-
-            System.out.println("\n--- CURRENT STATUS ---");
-            ui.printProgressBar("Health", player.getHealth(), 100);
-            ui.printProgressBar("Food Supplies", player.getFoodSupplies(), 100);
-            ui.printProgressBar("Wagon Space", player.getCaravan().getCurrentWeight(), player.getCaravan().getMaxWeight());
-            ui.printCurrency("Wallet", player.getSilver());
-
-            String[] menuOptions = {
-                    "Visit the " + currentCity.getName() + " Merchant Guild Stand",
-                    "Check Wagon Inventory",
-                    "Depart for " + currentCity.getNextCityName() + " (" + currentCity.getDistance() + " days)",
-                    "Retire from Trading",
-            };
-            int choice = ui.displayMenu(menuOptions);
-
-            if (choice == 1) {
-                handleMarket(player, ui);
-            }
-            else if (choice == 2) {
-                checkInventory(player, ui);
-            }
-            else if (choice == 3) {
-                handleTravel(player, ui);
-            }
-            else if (choice == 4) {
-                System.out.println("Final Silver: " + player.getSilver());
-                System.out.println("You quit your life as a travelling merchant and settled down in " + currentCity.getName() +
-                        ".\n You are happy working at your small vendor's table, but you wonder if you could have been something more.");
-                // ADD GRADING SYSTEM LATER BASED ON FINAL WEALTH
-                isRunning = false;
-            }
-            else if(choice == 415)
+            ui.printHeader("Choose a Meal!");
+            ui.printProgressBar("Hunger", player.getHunger(), 100);
+            int choice = ui.displayMenu(options);
             {
-                System.out.println("Cheater Cheater Pumpkin Eater");
-                player.setSilver(1000);
-                player.setHealth(100);
-                player.setFoodSupplies(100);
-            }
+                if(choice <= foodInWagon.size()){
+                    FoodItem selectedFood = foodInWagon.get(choice - 1);
+                    player.setHunger(player.getHunger() + selectedFood.getNutrition());
+                    System.out.println("\n[+] You ate the " + selectedFood.getName() + ".");
+                    inv.remove(selectedFood);
 
-            if (isRunning) {
-                ui.waitForEnter();
+                    if (player.getHunger() >= 100) {
+                        System.out.println("You are completely full!");
+                        stillEating = false;
+                    } else {
+                        System.out.println("Your belly thanks you");
+                        ui.waitForEnter();
+                    }
+                }
+                else {
+                    ui.printMessage("\nYou tighten your belt and decide to save the food for market.");
+                    stillEating = false;
+                    ui.waitForEnter();
+                }
             }
         }
+
     }
     public static Market generateRandomMarket() {
         Market newMarket = new Market();
@@ -381,3 +448,4 @@ public class MerchantGame
 }
 
 
+;
