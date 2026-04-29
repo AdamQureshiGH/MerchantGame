@@ -266,7 +266,6 @@ public class MerchantGame
 
             if(foodInWagon.isEmpty()){
                 ui.printMessage("You search your wagon but find no food. Your belly grumbles.");
-                stillEating = false;
                 break;
             }
 
@@ -448,4 +447,3 @@ public class MerchantGame
 }
 
 
-;
