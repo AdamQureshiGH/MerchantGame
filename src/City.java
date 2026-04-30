@@ -4,6 +4,10 @@ public class City {
     private int distanceToNext;
     private String description;
     private Market cityMarket;
+
+    private String boomingItemName = "";
+    private double priceMultiplier = 1.0;
+    private String rumorText = "";
     public City(String name, String nextCity, int dist, String desc, Market market) {
         this.name = name;
         this.nextCityName = nextCity;
@@ -26,4 +30,14 @@ public class City {
     public String getDescription() {
         return description;
     }
+
+    public void setBoomingItem(String name, double mult) {
+        this.boomingItemName = name;
+        this.priceMultiplier = mult;
+    }
+    public String getBoomingItemName() { return boomingItemName; }
+    public double getPriceMultiplier() { return priceMultiplier; }
+
+    public void setRumor(String text) { this.rumorText = text; }
+    public String getRumor() { return rumorText; }
 }

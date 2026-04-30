@@ -23,6 +23,7 @@ public class MerchantGame
     public static void main(String[] args) {
         GameUI ui = new GameUI();
         Player player = new Player();
+        rumorSystem();
 
         ui.printHeader("Merchant Game");
         System.out.println("The year is 1422. You stand in the bustling docks of Venice.");
@@ -42,6 +43,9 @@ public class MerchantGame
             currentCity = worldMap[currentCityIndex];
             ui.printHeader(currentCity.getName());
             System.out.println(currentCity.getDescription());
+            if (!currentCity.getRumor().isEmpty()) {
+               System.out.println("\n[Merchant Whispers..] " + currentCity.getRumor());
+            }
 
             System.out.println("\n--- CURRENT STATUS ---");
             ui.printProgressBar("Health", player.getHealth(), 100);
@@ -106,9 +110,20 @@ public class MerchantGame
 
     }
     public static void handleMarket(Player player, GameUI ui){
+        String[] marketOptions = {"Buy Items", "Sell Items", "Leave Market"};
+        int mChoice = ui.displayMenu(marketOptions);
+        if (mChoice == 1){
+            handleBuying(player, ui);
+        }
+        else if (mChoice == 2){
+            handleSelling(player, ui);
+        }
+        ui.clear();
+
+    }
+    public static void handleBuying(Player player, GameUI ui){
         boolean shopping = true;
         Market market = currentCity.getMarket();
-
         while(shopping)
         {
             ui.clear();
@@ -160,6 +175,82 @@ public class MerchantGame
                     }
                 }
                 ui.waitForEnter();
+            }
+        }
+    }
+    public static void handleSelling(Player player, GameUI ui){
+        boolean selling = true;
+        while (selling) {
+            ui.clear();
+            ui.printHeader("Sell Goods - " + currentCity.getName());
+            player.getCaravan().sortInventory();
+            ArrayList<Item> inv = player.getCaravan().getInventory();
+
+            if (inv.isEmpty()) {
+                System.out.println("Your wagon is empty.");
+                ui.waitForEnter();
+                return;
+            }
+
+            ArrayList<Item> uniqueOnes = new ArrayList<>();
+            ArrayList<Integer> counts = new ArrayList<>();
+
+            for (Item item : inv) {
+                boolean found = false;
+                for (int i = 0; i < uniqueOnes.size(); i++) {
+                    if (uniqueOnes.get(i).getName().equals(item.getName())) {
+                        counts.set(i, counts.get(i) + 1);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    uniqueOnes.add(item);
+                    counts.add(1);
+                }
+            }
+
+            String[] options = new String[uniqueOnes.size() + 1];
+            for (int i = 0; i < uniqueOnes.size(); i++) {
+                Item item = uniqueOnes.get(i);
+                int sellPrice = item.getPrice();
+
+                if (item.getName().equals(currentCity.getBoomingItemName())) {
+                    sellPrice = (int)(sellPrice * currentCity.getPriceMultiplier());
+                    options[i] = String.format("%d x %-15s | [HOT] %d Silver each", counts.get(i), item.getName(), sellPrice);
+                } else {
+                    sellPrice = (int)(sellPrice * 0.9);
+                    options[i] = String.format("%d x %-15s | %d Silver each", counts.get(i), item.getName(), sellPrice);
+                }
+            }
+            options[uniqueOnes.size()] = "Back to Market Menu";
+
+            int choice = ui.displayMenu(options);
+            if (choice > uniqueOnes.size()) {
+                selling = false;
+            } else {
+                Item selected = uniqueOnes.get(choice - 1);
+                System.out.print("How many " + selected.getName() + " to sell? ");
+                int qty = ui.readInt();
+
+                if (qty > 0 && qty <= counts.get(choice - 1)) {
+                    int unitPrice = selected.getName().equals(currentCity.getBoomingItemName()) ?
+                            (int)(selected.getPrice() * currentCity.getPriceMultiplier()) :
+                            (int)(selected.getPrice() * 0.8);
+
+                    int totalGain = unitPrice * qty;
+                    player.setSilver(player.getSilver() + totalGain);
+
+                    int removed = 0;
+                    for (int i = inv.size() - 1; i >= 0 && removed < qty; i--) {
+                        if (inv.get(i).getName().equals(selected.getName())) {
+                            inv.remove(i);
+                            removed++;
+                        }
+                    }
+                    System.out.println("Sold " + qty + " for " + totalGain + " Silver!");
+                    ui.waitForEnter();
+                }
             }
         }
     }
@@ -332,6 +423,27 @@ public class MerchantGame
 
         }
         return newMarket;
+    }
+    public static void rumorSystem() {
+        for (int i = 0; i < worldMap.length - 2; i++) {
+            City current = worldMap[i];
+            City nextCity = worldMap[i + 1];
+            City targetCity = worldMap[i + 2];
+
+            ArrayList<Item> nextCityStock = nextCity.getMarket().getShelf();
+
+            if (!nextCityStock.isEmpty()) {
+                Item luckyItem = nextCityStock.get((int)(Math.random() * nextCityStock.size()));
+
+                targetCity.setBoomingItem(luckyItem.getName(), 2.2); // Big profit!
+
+                String rumor = changeTextToCity(luckyItem, targetCity.getName());
+                current.setRumor(rumor);
+            }
+        }
+    }
+    private static String changeTextToCity(Item item, String targetCityName) {
+        return item.getRumorDescription().replace("[CITY]", targetCityName);
     }
     private static ArrayList<Item> initializeMasterPool() {
     ArrayList<Item> pool = new ArrayList<>();
