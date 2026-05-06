@@ -4,10 +4,11 @@ public class Item {
     private int weight;
     private String rumorDescription;
 
-    public Item(String n, int p, int w) {
+    public Item(String n, int p, int w, String rumor) {
         this.name = n;
         this.price = p;
         this.weight = w;
+        this.rumorDescription = rumor;
     }
 
     public String getRumorDescription() { return rumorDescription; }

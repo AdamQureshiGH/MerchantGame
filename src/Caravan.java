@@ -9,13 +9,7 @@ public class Caravan {
     public Caravan(int maxW) {
         this.inventory = new ArrayList<>();
         this.maxWeight = maxW;
-
-        addItem(new Item("bingus", 10, 10));
-        addItem(new Item("aingus", 10, 10));
-        addItem(new Item("cingus", 10, 10));
-        addItem(new Item("gingus", 10, 10));
-        addItem(new Item("bingus", 10, 10));
-        addItem(new Item("eingus", 10, 10));
+        addItem(new Item("Bingus", 25, 10, "He's a mean one."));
 
     }
 
