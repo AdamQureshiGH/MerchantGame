@@ -7,6 +7,7 @@ public class MerchantGame
     //difficulty modifier could affect distance and food consumption
     //events with moral decisions or bad things happening or good things happenign, or meeting wandering traders
     //alchemist offers you potions, spend a day searching for chicken 50% for big reward
+    //fat cat
     static City currentCity;
     static boolean isRunning = true;
     static int currentCityIndex = 0;
@@ -178,6 +179,25 @@ public class MerchantGame
             }
         }
     }
+    public static int calculatePrice(Item item) {
+        int base = item.getPrice();
+        if (item.getName().equals(currentCity.getBoomingItemName())) {
+            return (int)(base * currentCity.getPriceMultiplier());
+        }
+        boolean existsInMarket = false;
+        for (Item shelfItem : currentCity.getMarket().getShelf()) {
+            if (shelfItem.getName().equals(item.getName())) {
+                existsInMarket = true;
+                break;
+            }
+        }
+        if (existsInMarket) {
+            return (int)(base * 0.7);
+        } else {
+            double randomMod = 0.8 + (Math.random() * 0.4);
+            return (int)(base * randomMod);
+        }
+    }
     public static void handleSelling(Player player, GameUI ui){
         boolean selling = true;
         while (selling) {
@@ -213,7 +233,7 @@ public class MerchantGame
             String[] options = new String[uniqueOnes.size() + 1];
             for (int i = 0; i < uniqueOnes.size(); i++) {
                 Item item = uniqueOnes.get(i);
-                int sellPrice = item.getPrice();
+                int sellPrice = calculatePrice(item);
 
                 if (item.getName().equals(currentCity.getBoomingItemName())) {
                     sellPrice = (int)(sellPrice * currentCity.getPriceMultiplier());
@@ -234,9 +254,7 @@ public class MerchantGame
                 int qty = ui.readInt();
 
                 if (qty > 0 && qty <= counts.get(choice - 1)) {
-                    int unitPrice = selected.getName().equals(currentCity.getBoomingItemName()) ?
-                            (int)(selected.getPrice() * currentCity.getPriceMultiplier()) :
-                            (int)(selected.getPrice() * 0.8);
+                    int unitPrice = calculatePrice(selected);
 
                     int totalGain = unitPrice * qty;
                     player.setSilver(player.getSilver() + totalGain);
@@ -434,7 +452,7 @@ public class MerchantGame
             if (!nextCityStock.isEmpty()) {
                 Item luckyItem = nextCityStock.get((int)(Math.random() * nextCityStock.size()));
 
-                targetCity.setBoomingItem(luckyItem.getName(), 2.2);
+                targetCity.setBoomingItem(luckyItem.getName(), 2.0);
 
                 String rumor = changeTextToCity(luckyItem, targetCity.getName());
                 current.setRumor(rumor);
