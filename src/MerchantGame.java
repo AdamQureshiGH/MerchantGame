@@ -179,11 +179,14 @@ public class MerchantGame
             }
         }
     }
+
     public static int calculatePrice(Item item) {
         int base = item.getPrice();
+
         if (item.getName().equals(currentCity.getBoomingItemName())) {
             return (int)(base * currentCity.getPriceMultiplier());
         }
+
         boolean existsInMarket = false;
         for (Item shelfItem : currentCity.getMarket().getShelf()) {
             if (shelfItem.getName().equals(item.getName())) {
@@ -191,13 +194,17 @@ public class MerchantGame
                 break;
             }
         }
+
         if (existsInMarket) {
             return (int)(base * 0.7);
-        } else {
+        }
+        else {
             double randomMod = 0.8 + (Math.random() * 0.4);
-            return (int)(base * randomMod);
+            return (int) (base * randomMod);
         }
     }
+
+
     public static void handleSelling(Player player, GameUI ui){
         boolean selling = true;
         while (selling) {
@@ -214,6 +221,7 @@ public class MerchantGame
 
             ArrayList<Item> uniqueOnes = new ArrayList<>();
             ArrayList<Integer> counts = new ArrayList<>();
+            ArrayList<Integer> displayedPrices = new ArrayList<>();
 
             for (Item item : inv) {
                 boolean found = false;
@@ -234,12 +242,11 @@ public class MerchantGame
             for (int i = 0; i < uniqueOnes.size(); i++) {
                 Item item = uniqueOnes.get(i);
                 int sellPrice = calculatePrice(item);
+                displayedPrices.add(sellPrice);
 
                 if (item.getName().equals(currentCity.getBoomingItemName())) {
-                    sellPrice = (int)(sellPrice * currentCity.getPriceMultiplier());
                     options[i] = String.format("%d x %-15s | [HOT] %d Silver each", counts.get(i), item.getName(), sellPrice);
                 } else {
-                    sellPrice = (int)(sellPrice * 0.9);
                     options[i] = String.format("%d x %-15s | %d Silver each", counts.get(i), item.getName(), sellPrice);
                 }
             }
@@ -254,7 +261,7 @@ public class MerchantGame
                 int qty = ui.readInt();
 
                 if (qty > 0 && qty <= counts.get(choice - 1)) {
-                    int unitPrice = calculatePrice(selected);
+                    int unitPrice = displayedPrices.get(choice - 1);
 
                     int totalGain = unitPrice * qty;
                     player.setSilver(player.getSilver() + totalGain);
