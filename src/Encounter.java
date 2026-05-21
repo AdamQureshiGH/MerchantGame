@@ -74,6 +74,54 @@ public class Encounter {
                 System.out.println("You pay the toll. (-25 Silver)");
                 player.setSilver(Math.max(0, player.getSilver() - 25));
                 break;
+            case "The Dynamic Duo":
+                System.out.println("The knight takes the silver, bows majestically, and trips over his own shoes. You pass safely. (-75 Silver)");
+                player.setSilver(Math.max(0, player.getSilver() - 75));
+                break;
+
+            case "The Aggressive Goose":
+                System.out.println("The battle is fierce. You win, but at what cost? (-15 Health)");
+                player.setHealth(player.getHealth() - 15);
+                player.getCaravan().addItem(new FoodItem("Goose Remains", 20, 10, 50, "GOOSE"));
+                break;
+            case "Suspicious Free Soup":
+                if (rand.nextBoolean()) {
+                    System.out.println("Delicious! It restores your energy entirely. (+90 Hunger, +30 Health)");
+                    player.setHunger(Math.min(100, player.getHunger() + 90));
+                    player.setHealth(Math.min(100, player.getHealth() + 30));
+                } else {
+                    System.out.println("Severe food poisoning. You spend the night vomiting behind a bush. (-30 Hunger, -30 Health)");
+                    player.setHunger(Math.max(0, player.getHunger() - 30));
+                    player.setHealth(player.getHealth() - 30);
+                }
+                break;
+            case "The Time Traveling Peasant":
+                System.out.println("He panics, screams about a butterfly effect, throws a weird metal brick at you, and flees.");
+                System.out.println("(You pocket the 'Dead Smartphone' to sell later.)");
+                player.getCaravan().addItem(new Item("Dead Smartphone", 10, 5, "SMARTPHONE"));
+                break;
+            case "The Runaway Cheese Wheel":
+                if (rand.nextInt(100) < 40) {
+                    System.out.println("You catch it perfectly! Incredible. Heavy, but delicious. (+1 Luxury Cheese)");
+                    player.getCaravan().addItem(new FoodItem("Luxury Cheese Wheel", 100, 30, 80, "CHEESE WHEEL"));
+                } else {
+                    System.out.println("It smashes right into your ribs and shatters. (-30 Health)");
+                    player.setHealth(player.getHealth() - 30);
+                }
+                break;
+            case "The Quicksand Scam":
+                System.out.println("It's an ambush! Three bandits jump out of a nearby bush while you are distracted pulling him out! (-100 Silver, -10 Health)");
+                player.setSilver(Math.max(0, player.getSilver() - 100));
+                player.setHealth(player.getHealth() - 10);
+                break;
+            case "The Horse Strike":
+                if (player.getSilver() >= 40) {
+                    System.out.println("You pay a passing traveler 40 Silver to hand them an expensive sugar treat. They happily stand back up and pull with renewed energy. (-40 Silver)");
+                    player.setSilver(player.getSilver() - 40);
+                } else {
+                    System.out.println("You don't even have 40 silver to pay the passerby! Your horses glare at your poverty and continue sitting.");
+                }
+                break;
         }
     }
     //Executes the result of player picking option 2
@@ -118,6 +166,42 @@ public class Encounter {
                     System.out.println("You tell them about the time you accidentally stood up to receive somebody else's award because you misheard");
                 }
                 break;
+            case "Suspicious Free Soup":
+                System.out.println("You stay hungry but safe. The peasants look mildly insulted.");
+                break;
+
+            case "The Time-Traveling Peasant":
+                System.out.println("You drive past. You hear him muttering about buying stock in something called 'Apple'.");
+                break;
+
+            case "The Runaway Cheese Wheel":
+                System.out.println("The cheese barrels past and explodes against a boulder. The air smells vaguely of dairy.");
+                break;
+
+            case "The Quicksand Scam":
+                System.out.println("The man stops screaming, sighs, unties the rope himself, and sits down on a rock, looking disappointed in his failed career choice.");
+                break;
+
+            case "The Horse Strike":
+                System.out.println("One horse turns around and bites your arm. You waste a day waiting for them to care again. (-10 Health, -10 Hunger)");
+                player.setHealth(player.getHealth() - 10);
+                player.setHunger(Math.max(0, player.getHunger() - 10));
+                break;
+            case "The Dynamic Duo":
+                if (rand.nextInt(100) < 60) {
+                    System.out.println("You tell the squire his armor looks blindingly radiant. He is so touched he convinces the knight to waive your fee and gives you a snack. (+15 Hunger)");
+                    player.setHunger(Math.min(100, player.getHunger() + 15));
+                } else {
+                    System.out.println("The squire sees through your lies. The knight fines you double for emotional manipulation. (-150 Silver)");
+                    player.setSilver(Math.max(0, player.getSilver() - 150));
+                }
+                break;
+
+            case "The Aggressive Goose":
+                System.out.println("You toss it some grain from your pockets. The goose accepts the tribute and allows your caravan to cross. (-15 Hunger)");
+                player.setHunger(Math.max(0, player.getHunger() - 15));
+                break;
+
         }
     }
 }

@@ -243,7 +243,7 @@ public class MerchantGame
             return (int) (base * randomMod);
         }
     }
-    //Allows the player to sell items in their inventory at the guildstand in bulk
+    //Allows the player to sell items in their inventory at the guildstand in bulk. Linnear search for items
     public static void handleSelling(Player player, GameUI ui){
         boolean selling = true;
         while (selling) {
@@ -558,7 +558,14 @@ public class MerchantGame
                 new Encounter("Highway Bandit Tolling", "Three armed bandits demand a 150 silver toll to pass.", "Pay the toll.", "Flee through the woods!"),
                 new Encounter("Old Lady", "You see an old lady struggling to fetch water out of a well.", "Help her.", "Keep on the path"),
                 new Encounter("Travelling Bard", "A Bard stops your wagon and forces you to listen to a poorly rhymed song.", "Wait until he leaves.", "Pay him to make it stop"),
-                new Encounter("The Haunted Bridge","A bridge is haunted by gnomes. You must pay the toll of 25 silver or telling an embarassing secret","Pay 25 Silver", "Tell an embarassing secret")
+                new Encounter("The Haunted Bridge","A bridge is haunted by gnomes. You must pay the toll of 25 silver or telling an embarassing secret","Pay 25 Silver", "Tell an embarassing secret"),
+                new Encounter("The Dynamic Duo", "A self proclaimed noble knight and his squire block the road demanding a 'circle symmetry tax' for your wagon wheels.", "Pay the ridiculous tax.", "Flatter the squire instead."),
+                new Encounter("The Aggressive Goose", "A large, menacing goose stands in the center of a narrow stone bridge. It actively wants problems.", "Fight the goose to assert dominance.", "Bribe it with rations."),
+                new Encounter("Suspicious Free Soup", "A cheerful peasant family invites you to join their campfire. They offer you a bowl of mystery meat with neon green bubbles.", "Eat the goulash.", "Politely decline."),
+                new Encounter("The Time Traveling Peasant", "A confused man dressed in strange neon clothing wanders onto the dirt road asking what year it is.", "Tell him it's 1422 and give him a map.", "Ignore him as a crazed lunatic."),
+                new Encounter("The Runaway Cheese Wheel", "A massive, 80 pound wheel of hard cheese comes tumbling down a steep hill directly toward your wagon.", "Attempt to catch it.", "Swerve the wagon to dodge."),
+                new Encounter("The Quicksand Scam", "A man is buried up to his chin in mud next to the road screaming for help. You notice a rope tied around his waist.", "Pull him out out of kindness.", "Drive past and wave."),
+                new Encounter("The Horse Strike", "Your caravan horses suddenly stop walking, sit flat on the dirt road, and refuse to move.", "Pay a passerby to give them an expensive sugar treat.", "Yell at them angrily.")
 
         };
         int index = (int)(Math.random() * encounterPool.length);
