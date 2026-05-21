@@ -10,7 +10,9 @@ public class Caravan {
         this.inventory = new ArrayList<>();
         this.maxWeight = maxW;
         addItem(new Item(catName, 25, 10, "He's a mean one."));
-
+        for(int i =0; i<5; i++){
+            addItem(new FoodItem("Manna Bread", 10, 10, 25, "MANNA"));
+        }
     }
 
     // pree : newItem is not null

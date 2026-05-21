@@ -1,6 +1,6 @@
 public class Player {
     private Caravan caravan;
-    private int silver = 100000;
+    private int silver = 1000;
     private int health = 100;
     private int hunger = 100;
 

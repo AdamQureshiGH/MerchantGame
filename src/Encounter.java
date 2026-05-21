@@ -82,7 +82,7 @@ public class Encounter {
             case "The Aggressive Goose":
                 System.out.println("The battle is fierce. You win, but at what cost? (-15 Health)");
                 player.setHealth(player.getHealth() - 15);
-                player.getCaravan().addItem(new FoodItem("Goose Remains", 20, 10, 50, "GOOSE"));
+                player.getCaravan().addItem(new FoodItem("Goose", 20, 10, 50, "GOOSE"));
                 break;
             case "Suspicious Free Soup":
                 if (rand.nextBoolean()) {
