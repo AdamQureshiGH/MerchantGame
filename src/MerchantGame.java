@@ -10,6 +10,7 @@ public class MerchantGame
     //fat cat
     static City currentCity;
     static boolean isRunning = true;
+    static boolean didCheat = false;
     static int currentCityIndex = 0;
     private static final ArrayList<Item> masterPool = initializeMasterPool();
 
@@ -80,6 +81,7 @@ public class MerchantGame
             }
             else if(choice == 415)
             {
+                didCheat = true;
                 System.out.println("Cheater Cheater Pumpkin Eater");
                 player.setSilver(1000);
                 player.setHealth(100);
@@ -89,6 +91,29 @@ public class MerchantGame
             if (isRunning) {
                 ui.waitForEnter();
             }
+        }
+    }
+    public static void finalScore(Player player, GameUI ui){
+        ui.clear();
+        ui.printHeader("FINAL SCORE");
+        System.out.println("Final Silver: " +player.getSilver());
+        if(player.getSilver() >= 10000 && player.getHealth() >= 80){
+            ui.printMessage("You settled down in Constantinople, created your own merchants guild, and are on track to rule the world! Congratulations!");
+        }
+        else if(player.getSilver() >= 10000){
+            ui.printMessage("You made it to Constantinople, bought a big beautiful mansion, and cemented a life for yourself");
+        }else if (player.getSilver() >= 5000) {
+            ui.printMessage("Constantinope greets you with open arms, and you're ready to start living the high life as a member of the nouveau riche!");
+        }else if (player.getSilver() >= 1000) {
+            ui.printMessage("You made it to Constantinople, it was an arduous journey but you did it!");
+        }else if (player.getSilver() >= 500) {
+            ui.printMessage("You made it to the end, you didn't achieve your wildest dreams but found respect for yourself");
+        }
+        else{
+            ui.printMessage("You didn't work hard and are now a bum on the streets of Constantinople.");
+        }
+        if(didCheat){
+            System.out.println("\nCongrats CHEATER!!!");
         }
     }
     public static void printDeathMessage() {
@@ -316,7 +341,7 @@ public class MerchantGame
         ui.clear();
         if (currentCity.getNextCityName().equals("FINISHED")) {
             System.out.println("You reached the end of the road!");
-            //Grading system here
+            finalScore(player, ui);
             isRunning = false;
         } else {
             int travelDays = currentCity.getDistance();
