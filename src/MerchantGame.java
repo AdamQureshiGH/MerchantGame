@@ -1,13 +1,8 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MerchantGame
 {
-
-    //main menu with what the game is, how to play, select difficulty, and play,
-    //difficulty modifier could affect distance and food consumption
-    //events with moral decisions or bad things happening or good things happenign, or meeting wandering traders
-    //alchemist offers you potions, spend a day searching for chicken 50% for big reward
-    //fat cat
     static City currentCity;
     static boolean isRunning = true;
     static boolean didCheat = false;
@@ -23,18 +18,30 @@ public class MerchantGame
     };
 
     public static void main(String[] args) {
+
         GameUI ui = new GameUI();
-        Player player = new Player();
+        Scanner keyboard = new Scanner(System.in);
+        ui.printMessage("What would you like to name your pet cat?\n");
+        String catName = ui.getScanner().nextLine();
+        Player player = new Player(catName);
+
         rumorSystem();
 
         ui.printHeader("Merchant Game");
         System.out.println("The year is 1422. You stand in the bustling docks of Venice.");
         System.out.println("Your caravan is ready to be loaded, and the road to the East awaits.");
 
+
         ui.waitForEnter();
 
         mainLoop(player, ui);
 
+        for(int i = 0; i<player.getCaravan().getInventory().size(); i++){
+            if(player.getCaravan().getInventory().get(i).getName() == catName)
+            {
+                System.out.println("The real treasure was the friends we made along the way.");
+            }
+        }
         System.out.println("\n*** Thank you for playing! ***");
     }
     public static void mainLoop(Player player, GameUI ui){
@@ -58,6 +65,7 @@ public class MerchantGame
             String[] menuOptions = {
                     "Visit the " + currentCity.getName() + " Merchant Guild Stand",
                     "Check Wagon Inventory",
+                    "Upgrade Wagon",
                     "Depart for " + currentCity.getNextCityName() + " (" + currentCity.getDistance() + " days)",
                     "Retire from Trading",
             };
@@ -70,9 +78,12 @@ public class MerchantGame
                 checkInventory(player, ui);
             }
             else if (choice == 3) {
-                handleTravel(player, ui);
+                handleWagonUpgrade(player, ui);
             }
             else if (choice == 4) {
+                handleTravel(player, ui);
+            }
+            else if (choice == 5) {
                 System.out.println("Final Silver: " + player.getSilver());
                 System.out.println("You quit your life as a travelling merchant and settled down in " + currentCity.getName() +
                         ".\n You are happy working at your small vendor's table, but you wonder if you could have been something more.");
@@ -110,7 +121,7 @@ public class MerchantGame
             ui.printMessage("You made it to the end, you didn't achieve your wildest dreams but found respect for yourself");
         }
         else{
-            ui.printMessage("You didn't work hard and are now a bum on the streets of Constantinople.");
+            ui.printMessage("You didn't work hard enough and are now a bum on the streets of Constantinople.");
         }
         if(didCheat){
             System.out.println("\nCongrats CHEATER!!!");
@@ -336,8 +347,34 @@ public class MerchantGame
 
         ui.printProgressBar("Weight Capacity", player.getCaravan().getCurrentWeight(), player.getCaravan().getMaxWeight());
     }
+    public static void handleWagonUpgrade(Player player, GameUI ui){
+        ui.clear();
+        ui.printHeader("Wagon Carpentry Workshop");
+        int currentMax = player.getCaravan().getMaxWeight();
+        int upgradeCost = (currentMax / 10) * 15;
+        System.out.println("Current Weight Limit: " + currentMax);
+        System.out.println("Wagon Upgrade Cost: " + upgradeCost + " silver.");
+
+        String[] options = {"Upgrade Space by " + (currentMax) + " capacity", "Leave Workshop"};
+        int choice = ui.displayMenu(options);
+
+        if (choice == 1) {
+            if (player.getSilver() >= upgradeCost) {
+                player.setSilver(player.getSilver() - upgradeCost);
+                player.getCaravan().setMaxWeight(currentMax*2);
+                System.out.println("\nUpgrade complete! Your new capacity is " + (currentMax * 2));
+            } else {
+                System.out.println("\nYou do not have enough silver to afford this upgrade!");
+            }
+        }
+
+
+    }
     public static void handleTravel(Player player, GameUI ui)
     {
+        int totalDays = currentCity.getDistance();
+        int eventDay = (int)(Math.random() * (totalDays - 1)) + 1;
+
         ui.clear();
         if (currentCity.getNextCityName().equals("FINISHED")) {
             System.out.println("You reached the end of the road!");
@@ -350,7 +387,6 @@ public class MerchantGame
             for(int d = 1; d<= travelDays; d++)
             {
                 System.out.println("\nDay " + d + " on the road.");
-                //Random events here
 
                 int energyBurned = (int)(Math.random() * 11) + 10;
 
@@ -383,6 +419,16 @@ public class MerchantGame
                     printDeathMessage();
                     isRunning = false;
                     break;
+                }
+                if(d == eventDay){
+                    Encounter randomEvent = getRandomEncounter();
+                    randomEvent.execute(player, ui);
+
+                    if (player.getHealth() <= 0) {
+                        printDeathMessage();
+                        isRunning = false;
+                        return;
+                    }
                 }
             }
             if (isRunning) {
@@ -493,6 +539,19 @@ public class MerchantGame
     }
     private static String changeTextToCity(Item item, String targetCityName) {
         return item.getRumorDescription().replace("[CITY]", targetCityName);
+    }
+    private static Encounter getRandomEncounter() {
+        Encounter[] encounterPool = {
+                new Encounter("The Fat Cat", "A remarkably fat cat blocks the muddy path.", "Pet it.", "Ignore it."),
+                new Encounter("Wandering Alchemist", "An old man offers a bubbling potion for 100 silver.", "Buy and drink it.", "Decline politely."),
+                new Encounter("Highway Bandit Tolling", "Three armed bandits demand a 150 silver toll to pass.", "Pay the toll.", "Flee through the woods!"),
+                new Encounter("Old Lady", "You see an old lady struggling to fetch water out of a well.", "Help her.", "Keep on the path"),
+                new Encounter("Travelling Bard", "A Bard stops your wagon and forces you to listen to a poorly rhymed song.", "Wait until he leaves.", "Pay him to make it stop"),
+                new Encounter("The Haunted Bridge","A bridge is haunted by gnomes. You must pay the toll of 25 silver or telling an embarassing secret","Pay 25 Silver", "Tell an embarassing secret")
+
+        };
+        int index = (int)(Math.random() * encounterPool.length);
+        return encounterPool[index];
     }
     private static ArrayList<Item> initializeMasterPool() {
     ArrayList<Item> pool = new ArrayList<>();

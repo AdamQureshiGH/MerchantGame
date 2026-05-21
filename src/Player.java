@@ -1,11 +1,11 @@
 public class Player {
     private Caravan caravan;
-    private int silver = 100;
+    private int silver = 100000;
     private int health = 100;
-    private int hunger = 20;
+    private int hunger = 100;
 
-    public Player() {
-        caravan = new Caravan(1000);
+    public Player(String catName) {
+        caravan = new Caravan(1000, catName);
     }
 
     public Caravan getCaravan() {

@@ -6,10 +6,10 @@ public class Caravan {
 
     // pre: maxW > 0
     // post: Caravan initialized
-    public Caravan(int maxW) {
+    public Caravan(int maxW, String catName) {
         this.inventory = new ArrayList<>();
         this.maxWeight = maxW;
-        addItem(new Item("Bingus", 25, 10, "He's a mean one."));
+        addItem(new Item(catName, 25, 10, "He's a mean one."));
 
     }
 
@@ -33,6 +33,9 @@ public class Caravan {
         return total;
     }
 
+    public void setMaxWeight(int maxWeight){
+        this.maxWeight = maxWeight;
+    }
     public int getMaxWeight() { return maxWeight; }
 
     public ArrayList<Item> getInventory() { return inventory; }

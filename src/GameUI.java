@@ -19,6 +19,9 @@ public class GameUI {
         System.out.println("    --- " + title.toUpperCase() + " ---");
         System.out.println("****************************************************");
     }
+    public void printLine(){
+        System.out.println("\n----------------------------------------");
+    }
 
     // pre: label is not null andd current and max are > 0
     // post: prints a bar for Health or Wagon Capacity
@@ -73,5 +76,8 @@ public class GameUI {
             scanner.next();
         }
         return scanner.nextInt();
+    }
+    public Scanner getScanner(){
+        return scanner;
     }
 }
