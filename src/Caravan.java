@@ -39,7 +39,7 @@ public class Caravan {
     public int getMaxWeight() { return maxWeight; }
 
     public ArrayList<Item> getInventory() { return inventory; }
-
+    //Sorts the inventory items in alphabetical order using selection sort
     public void sortInventory() {
 
         for(int i = 0; i < inventory.size(); i++){

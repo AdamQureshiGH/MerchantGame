@@ -6,6 +6,7 @@ public class GameUI {
     public GameUI() {
         scanner = new Scanner(System.in);
     }
+    //Prints empty lines to clear out the view
     public void clear(){
         for(int i = 0; i < 30; i++)
         {
@@ -19,6 +20,7 @@ public class GameUI {
         System.out.println("    --- " + title.toUpperCase() + " ---");
         System.out.println("****************************************************");
     }
+    //Prints a single line
     public void printLine(){
         System.out.println("\n----------------------------------------");
     }
@@ -69,7 +71,7 @@ public class GameUI {
         scanner.nextLine();
         scanner.nextLine();
     }
-
+//read a valid integer from a scanner
     public int readInt() {
         while (!scanner.hasNextInt()) {
             System.out.print("Enter a number: ");

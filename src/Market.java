@@ -9,14 +9,12 @@ public class Market {
     public Market() {
         shelf = new ArrayList<Item>();
     }
-
+    //Add a specific Item to the market list
     public void addItemToStock(Item item){
         shelf.add(item);
     }
+    //Return the market list of items
     public ArrayList<Item> getShelf(){
         return shelf;
-    }
-    public Item buyItem(int index){
-        return shelf.remove(index);
     }
 }

@@ -16,7 +16,7 @@ public class MerchantGame
             new City("Adrianople", "Constantinople", 3, "The capital of the Ottoman Empire.",generateRandomMarket()),
             new City("Constantinople", "FINISHED", 0, "The crossroads between Europe and Asia.", generateRandomMarket())
     };
-
+    //main function
     public static void main(String[] args) {
 
         GameUI ui = new GameUI();
@@ -44,6 +44,7 @@ public class MerchantGame
         }
         System.out.println("\n*** Thank you for playing! ***");
     }
+    //main game loop that gives players the initial options of what to do
     public static void mainLoop(Player player, GameUI ui){
         while(isRunning)
         {
@@ -87,7 +88,6 @@ public class MerchantGame
                 System.out.println("Final Silver: " + player.getSilver());
                 System.out.println("You quit your life as a travelling merchant and settled down in " + currentCity.getName() +
                         ".\n You are happy working at your small vendor's table, but you wonder if you could have been something more.");
-                // ADD GRADING SYSTEM LATER BASED ON FINAL WEALTH
                 isRunning = false;
             }
             else if(choice == 415)
@@ -104,6 +104,7 @@ public class MerchantGame
             }
         }
     }
+    //Prints the player a final score based on their final silver
     public static void finalScore(Player player, GameUI ui){
         ui.clear();
         ui.printHeader("FINAL SCORE");
@@ -127,6 +128,7 @@ public class MerchantGame
             System.out.println("\nCongrats CHEATER!!!");
         }
     }
+    //Prints a funny message for the player
     public static void printDeathMessage() {
         String[] messages = {
                 "Scorpions crawl over your decomposing corpse. Welcome hOMe.",
@@ -146,6 +148,7 @@ public class MerchantGame
         System.out.println("****************************************");
 
     }
+    //Handles Market logic so players can choose to buy items from the market or sell from their inventory
     public static void handleMarket(Player player, GameUI ui){
         String[] marketOptions = {"Buy Items", "Sell Items", "Leave Market"};
         int mChoice = ui.displayMenu(marketOptions);
@@ -158,6 +161,7 @@ public class MerchantGame
         ui.clear();
 
     }
+    //Displays current city's market items, then offers the player items to buy for their inventory
     public static void handleBuying(Player player, GameUI ui){
         boolean shopping = true;
         Market market = currentCity.getMarket();
@@ -215,7 +219,7 @@ public class MerchantGame
             }
         }
     }
-
+    //calculate the price of an item to sell at a specific city
     public static int calculatePrice(Item item) {
         int base = item.getPrice();
 
@@ -239,8 +243,7 @@ public class MerchantGame
             return (int) (base * randomMod);
         }
     }
-
-
+    //Allows the player to sell items in their inventory at the guildstand in bulk
     public static void handleSelling(Player player, GameUI ui){
         boolean selling = true;
         while (selling) {
@@ -315,6 +318,7 @@ public class MerchantGame
             }
         }
     }
+    //Prints out the player's inventory
     public static void checkInventory(Player player, GameUI ui){
         ui.clear();
         ui.printHeader("Wagon Inventory");
@@ -347,6 +351,7 @@ public class MerchantGame
 
         ui.printProgressBar("Weight Capacity", player.getCaravan().getCurrentWeight(), player.getCaravan().getMaxWeight());
     }
+    //Allows the player to increase their wagon capacity if they have enough silver
     public static void handleWagonUpgrade(Player player, GameUI ui){
         ui.clear();
         ui.printHeader("Wagon Carpentry Workshop");
@@ -370,6 +375,7 @@ public class MerchantGame
 
 
     }
+    //Runs a for loop iterating through the days of traveling in between cities, chance for a random event
     public static void handleTravel(Player player, GameUI ui)
     {
         int totalDays = currentCity.getDistance();
@@ -438,6 +444,7 @@ public class MerchantGame
 
         }
     }
+    //Allows player to eat food out of their inventory
     public static void checkAndEatWagonFood(Player player, GameUI ui){
         ArrayList<Item> inv = player.getCaravan().getInventory();
         boolean stillEating = true;
@@ -490,6 +497,7 @@ public class MerchantGame
         }
 
     }
+    //Creates a list of items that will be sold at a city
     public static Market generateRandomMarket() {
         Market newMarket = new Market();
         ArrayList<Item> foodOptions = new ArrayList<>();
@@ -519,6 +527,7 @@ public class MerchantGame
         }
         return newMarket;
     }
+    //Creates a rumor for each city about an item being sold in the next city that is going for a high price two cities down the road
     public static void rumorSystem() {
         for (int i = 0; i < worldMap.length - 2; i++) {
             City current = worldMap[i];
@@ -537,9 +546,11 @@ public class MerchantGame
             }
         }
     }
+    //Allows the rumor to have a specific city name in the text
     private static String changeTextToCity(Item item, String targetCityName) {
         return item.getRumorDescription().replace("[CITY]", targetCityName);
     }
+    //Picks a random encounter from a premade array
     private static Encounter getRandomEncounter() {
         Encounter[] encounterPool = {
                 new Encounter("The Fat Cat", "A remarkably fat cat blocks the muddy path.", "Pet it.", "Ignore it."),
@@ -553,6 +564,7 @@ public class MerchantGame
         int index = (int)(Math.random() * encounterPool.length);
         return encounterPool[index];
     }
+    //Initializes all possible items to be sold in markets
     private static ArrayList<Item> initializeMasterPool() {
     ArrayList<Item> pool = new ArrayList<>();
         //food

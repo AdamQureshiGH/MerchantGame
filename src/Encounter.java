@@ -4,13 +4,14 @@ public class Encounter {
     private String description;
     private String option1;
     private String option2;
-
+    //initializes an encounter for its title, description, and two possible options
     public Encounter(String title, String description, String option1, String option2){
         this.title = title;
         this.description = description;
         this.option1 = option1;
         this.option2 = option2;
     }
+    //allows the player to pick one of the two options
     public void execute(Player player, GameUI ui){
         ui.clear();
         ui.printHeader("TRAVEL ENCOUNTER");
@@ -29,6 +30,7 @@ public class Encounter {
         }
         ui.waitForEnter();
     }
+    //Executes the result of the player picking option 1
     private void handleOption1(Player player, Random rand)
     {
         switch(this.title){
@@ -74,6 +76,7 @@ public class Encounter {
                 break;
         }
     }
+    //Executes the result of player picking option 2
     private void handleOption2(Player player, Random rand){
         switch(this.title){
             case "The Fat Cat":

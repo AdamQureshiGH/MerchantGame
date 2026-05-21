@@ -19,7 +19,7 @@ public class Item {
         this.price = newPrice;
     }
 
-
+    //Prints the item in a pretty format with its name and weight
     public String toString() {
         return String.format("%-15s | Weight: %d lbs", name, weight);
     }
