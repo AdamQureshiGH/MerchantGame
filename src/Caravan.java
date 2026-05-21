@@ -9,7 +9,7 @@ public class Caravan {
     public Caravan(int maxW, String catName) {
         this.inventory = new ArrayList<>();
         this.maxWeight = maxW;
-        addItem(new Item(catName, 25, 10, "He's a mean one."));
+        addItem(new Item(catName, 100, 10, "He's a mean one."));
         for(int i =0; i<5; i++){
             addItem(new FoodItem("Manna Bread", 10, 10, 25, "MANNA"));
         }

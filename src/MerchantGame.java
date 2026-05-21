@@ -12,8 +12,10 @@ public class MerchantGame
     static City[] worldMap = {
             new City("Venice", "Ragusa", 4, "The floating city of canals.", generateRandomMarket()),
             new City("Ragusa", "Budapest", 6, "A powerful stone fortress on the sea.", generateRandomMarket()),
-            new City("Budapest", "Adrianople", 5, "The jewel of the Danube river.", generateRandomMarket()),
-            new City("Adrianople", "Constantinople", 3, "The capital of the Ottoman Empire.",generateRandomMarket()),
+            new City("Budapest", "Belgrade", 4, "The strategic fortress gate to the Balkans.", generateRandomMarket()),
+            new City("Belgrade", "Sofia", 3, "A bustling market city nestled in the Balkan mountains.", generateRandomMarket()),
+            new City("Sofia", "Adrianople", 4, "A key trading hub along the ancient Roman roads.", generateRandomMarket()),
+            new City("Adrianople", "Constantinople", 3, "The capital of the Ottoman Empire.", generateRandomMarket()),
             new City("Constantinople", "FINISHED", 0, "The crossroads between Europe and Asia.", generateRandomMarket())
     };
     //main function
@@ -29,7 +31,7 @@ public class MerchantGame
 
         ui.printHeader("Merchant Game");
         System.out.println("The year is 1422. You stand in the bustling docks of Venice.");
-        System.out.println("Your caravan is ready to be loaded, and the road to the East awaits.");
+        System.out.println("Your caravan is ready to be loaded, and the road to Constantinople awaits.");
 
 
         ui.waitForEnter();
@@ -67,6 +69,7 @@ public class MerchantGame
                     "Visit the " + currentCity.getName() + " Merchant Guild Stand",
                     "Check Wagon Inventory",
                     "Upgrade Wagon",
+                    "Check Your Map",
                     "Depart for " + currentCity.getNextCityName() + " (" + currentCity.getDistance() + " days)",
                     "Retire from Trading",
             };
@@ -82,9 +85,12 @@ public class MerchantGame
                 handleWagonUpgrade(player, ui);
             }
             else if (choice == 4) {
-                handleTravel(player, ui);
+                checkMap(player, ui);
             }
             else if (choice == 5) {
+                handleTravel(player, ui);
+            }
+            else if (choice == 6) {
                 System.out.println("Final Silver: " + player.getSilver());
                 System.out.println("You quit your life as a travelling merchant and settled down in " + currentCity.getName() +
                         ".\n You are happy working at your small vendor's table, but you wonder if you could have been something more.");
@@ -102,6 +108,16 @@ public class MerchantGame
             if (isRunning) {
                 ui.waitForEnter();
             }
+        }
+    }
+    //Lists the cities in order and tells player where they are
+    public static void checkMap(Player player, GameUI ui){
+        ui.clear();
+        for(int i = 0; i < worldMap.length; i++){
+            if(worldMap[i] == currentCity){
+                System.out.print(" =>");
+            }
+            System.out.println(" [" + worldMap[i].getName() + "]");
         }
     }
     //Prints the player a final score based on their final silver
